@@ -39,12 +39,12 @@ def with_labels(image, label):
 
 
 def load_data(data_dir='./cnn/'):
-    name_left, name_right, name_middle = tuple(map(get_image_names(data_dir), ['left', 'right', 'middle']))
-    image_left, image_right, image_middle = tuple(map(names_to_image, [name_left, name_right, name_middle]))
-    image_left, image_right, image_middle = with_labels(image_left, [1, 0, 0]), with_labels(image_right,
-                                                                                            [0, 0, 1]), with_labels(
-        image_middle, [0, 1, 0])
-    image_all = image_left + image_right + image_middle
+    name_left, name_right, name_middle, name_front, name_back = tuple(map(get_image_names(data_dir), ['left', 'right', 'middle', 'front', 'back']))
+    image_left, image_right, image_middle, image_front, image_back = tuple(map(names_to_image, [name_left, name_right, name_middle, name_front, name_back]))
+    image_left, image_right, image_middle, image_front, image_back = with_labels(image_left, [1, 0, 0, 0, 0]), with_labels(image_right,
+                                                                                            [0, 0, 0, 0, 1]), with_labels(
+        image_middle, [0, 0, 1, 0, 0]), with_labels(image_front, [0, 1, 0, 0, 0]), with_labels(image_back, [0, 0, 0, 1, 0])
+    image_all = image_left + image_right + image_middle + image_front + image_back
     random.seed(1234)
     random.shuffle(image_all)
     x = list(map(lambda x: x[0], image_all))
@@ -102,7 +102,7 @@ if train:
 
 def test(image_path):
     model = models.load_model("./models/" + sorted(os.listdir("./models"))[-1])  # 모델로드
-    label2string = {(1, 0, 0): 'right', (0, 0, 1): 'left', (0, 1, 0): 'middle'}  # 레이블을 스트링 형태로
+    label2string = {(1, 0, 0, 0, 0): 'right', (0, 0, 0, 0, 1): 'left', (0, 0, 1, 0, 0): 'middle', (0, 1, 0, 0, 0): 'front', (0, 0, 0, 1, 0): 'back'}  # 레이블을 스트링 형태로
     image = Image.open(image_path)
     image = image.resize((int(image.size[0] / 20), int(image.size[1] / 20)))
     image_array = np.expand_dims(np.array(image).astype(np.float32), axis=0)
