@@ -140,7 +140,7 @@ def classify_result(class_result):  # 분류결과 출력 함수 정의
 
 def test(image_path):
     model = models.load_model("./models/" + sorted(os.listdir("./models"))[-1])  # 모델로드
-    label2string = {(1, 0, 0): 'right', (0, 0, 1): 'left', (0, 1, 0): 'middle'}  # 레이블을 스트링 형태로
+    label2string = {(1, 0, 0, 0, 0): 'right', (0, 0, 0, 0, 1): 'left', (0, 0, 1, 0, 0): 'middle', (0, 1, 0, 0, 0): 'front', (0, 0, 0, 1, 0): 'back'}  # 레이블을 스트링 형태로
     image = Image.open(image_path)
     image = image.resize((int(image.size[0] / 20), int(image.size[1] / 20)))
     image_array = np.expand_dims(np.array(image).astype(np.float32), axis=0)
@@ -148,10 +148,9 @@ def test(image_path):
     pred = [1 if x == max(raw_pred) else 0 for x in raw_pred]
     # plt.title(f"prediction:{label2string[tuple(pred)]}")
     # plt.imshow(np.array(image))
-    # plt.show()
     # plt.savefig(f"./pred.png")
-    print(label2string[tuple(pred)])
 
+    print(label2string[tuple(pred)])
 
 k = 5
 i = 0
